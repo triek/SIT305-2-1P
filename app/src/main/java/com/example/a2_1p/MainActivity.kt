@@ -214,11 +214,12 @@ fun CurrencySelectorScreen(modifier: Modifier = Modifier) {
         Button(
             onClick = {
                 val amount = inputAmount.toDoubleOrNull()
-                if (amount != null) {
-                    val converted = convertCurrency(selectedCurrency, targetCurrency, amount)
-                    result = converted.toString()
-                } else {
+                if (amount == null) {
                     result = "Please enter a valid number"
+                } else if (selectedCurrency == targetCurrency) {
+                    result = amount.toString()
+                } else {
+                    result = convertCurrency(selectedCurrency, targetCurrency, amount).toString()
                 }
             },
             modifier = Modifier.fillMaxWidth()
