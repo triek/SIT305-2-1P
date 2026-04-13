@@ -33,6 +33,7 @@ fun convertCurrency(from: String, to: String, amount: Double): Double {
         "USD" -> amount
         "AUD" -> amount / 1.55
         "EUR" -> amount / 0.92
+        "GBP" -> amount / 0.79
         "JPY" -> amount / 148.50
         else -> amount
     }
@@ -41,6 +42,7 @@ fun convertCurrency(from: String, to: String, amount: Double): Double {
         "USD" -> usdAmount
         "AUD" -> usdAmount * 1.55
         "EUR" -> usdAmount * 0.92
+        "GBP" -> usdAmount * 0.79
         "JPY" -> usdAmount * 148.50
         else -> usdAmount
     }
@@ -52,6 +54,8 @@ fun convertFuel(from: String, to: String, value: Double): Double {
         from == "km/L" && to == "mpg" -> value / 0.425
         from == "gallon" && to == "liter" -> value * 3.785
         from == "liter" && to == "gallon" -> value / 3.785
+        from == "nautical mile" && to == "km" -> value * 1.852
+        from == "km" && to == "nautical mile" -> value / 1.852
         else -> value
     }
 }
@@ -110,7 +114,7 @@ fun ConversionCategoriesScreen(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrencySelectorScreen(modifier: Modifier = Modifier) {
-    val currencies = listOf("AUD", "USD", "EUR", "JPY")
+    val currencies = listOf("AUD", "USD", "EUR", "GBP", "JPY")
     var sourceExpanded by remember { mutableStateOf(false) }
     var targetExpanded by remember { mutableStateOf(false) }
     var selectedCurrency by remember { mutableStateOf(currencies[0]) }
@@ -236,7 +240,7 @@ fun CurrencySelectorScreen(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FuelSelectorScreen(modifier: Modifier = Modifier) {
-    val fuelUnits = listOf("mpg", "km/L", "gallon", "liter")
+    val fuelUnits = listOf("mpg", "km/L", "gallon", "liter", "nautical mile", "km")
     var sourceExpanded by remember { mutableStateOf(false) }
     var targetExpanded by remember { mutableStateOf(false) }
     var sourceUnit by remember { mutableStateOf(fuelUnits[0]) }
@@ -281,7 +285,9 @@ fun FuelSelectorScreen(modifier: Modifier = Modifier) {
                 (sourceUnit == "mpg" && targetUnit == "km/L") ||
                 (sourceUnit == "km/L" && targetUnit == "mpg") ||
                 (sourceUnit == "gallon" && targetUnit == "liter") ||
-                (sourceUnit == "liter" && targetUnit == "gallon")
+                (sourceUnit == "liter" && targetUnit == "gallon") ||
+                (sourceUnit == "nautical mile" && targetUnit == "km") ||
+                (sourceUnit == "km" && targetUnit == "nautical mile")
             ) {
                 result = convertFuel(sourceUnit, targetUnit, amount).toString()
             } else {
